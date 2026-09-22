@@ -76,14 +76,6 @@ const App = () => {
     fetchWallpaper();
   }, []);
 
-  // Fetch user data on token change
-  useEffect(() => {
-    if (token) {
-      fetchUserProfile();
-      setCurrentPage('dashboard');
-    }
-  }, [token]);
-
   const fetchUserProfile = async () => {
     try {
       const res = await fetch(`${API_URL}/users/me`, {
@@ -100,6 +92,14 @@ const App = () => {
       console.error('Error fetching profile:', error);
     }
   };
+
+  // Fetch user data on token change
+  useEffect(() => {
+    if (token) {
+      fetchUserProfile();
+      setCurrentPage('dashboard');
+    }
+  }, [token]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
