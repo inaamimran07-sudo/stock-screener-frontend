@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, LogOut, Send, Upload, Users, MessageCircle, Settings, Edit2, Check, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LogOut, Send, Upload, Users, MessageCircle, Settings, Check } from 'lucide-react';
 import io from 'socket.io-client';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
@@ -34,18 +34,15 @@ const App = () => {
   // Profile setup
   const [showUsernameSetup, setShowUsernameSetup] = useState(false);
   const [newUsername, setNewUsername] = useState('');
-  const [avatarFile, setAvatarFile] = useState(null);
 
   // Messaging
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
-  const [inbox, setInbox] = useState([]);
 
   // Admin
   const [pendingUsers, setPendingUsers] = useState([]);
-  const [wallpaperFile, setWallpaperFile] = useState(null);
 
   // Initialize socket
   useEffect(() => {
@@ -76,25 +73,25 @@ const App = () => {
     fetchWallpaper();
   }, []);
 
-  const fetchUserProfile = async () => {
-    try {
-      const res = await fetch(`${API_URL}/users/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setUser(data.user);
-        if (!data.user.username) {
-          setShowUsernameSetup(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    }
-  };
-
   // Fetch user data on token change
   useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const res = await fetch(`${API_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.ok) {
+          setUser(data.user);
+          if (!data.user.username) {
+            setShowUsernameSetup(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
     if (token) {
       fetchUserProfile();
       setCurrentPage('dashboard');
